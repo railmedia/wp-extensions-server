@@ -22,15 +22,15 @@
                 </div>
                 <div class="card-body">
                     @if( $extensions )
-                    <ul class="list-none p-0 m-0">
+                    <table class="table">
                     @foreach( $extensions as $extension )
-                        <li class="flex justify-between">
-                            <span>{{ $extension->name }}</span>
-                            <span>Added: {{ date( 'd.m.Y H:i:s', strtotime( $extension->created_at ) ) }}</span>
-                            <span><a href="{{ route( 'extensions.edit', [ 'extension' => $extension ] ) }}">Edit</a></span>
-                        </li>
+                        <tr>
+                            <td>{{ $extension->name }}</td>
+                            <td>Added: {{ date( 'd.m.Y H:i:s', strtotime( $extension->created_at ) ) }}</td>
+                            <td><a href="{{ route( 'extensions.edit', [ 'extension' => $extension ] ) }}">Edit</a></td>
+                        </tr>
                     @endforeach
-                    </ul>
+                    </table>
                     @endif
                 </div>
             </div>
@@ -53,13 +53,13 @@
                 </div>
                 <div class="card-body">
                 @if( $users )
-                    <ul class="list-none p-0 m-0">
+                    <table class="table">
                     @foreach( $users as $user )
-                        <li class="flex justify-between">
-                            <span>{{ $user->name }}</span>
-                            <span>Added: {{ date( 'd.m.Y H:i:s', strtotime( $user->created_at ) ) }}</span>
-                            <span><a href="{{ route( 'users.edit', [ 'user' => $user ] ) }}">Edit</a></span>
-                        </li>
+                        <tr>
+                            <td>{{ $user->name }}</td>
+                            <td>Added: {{ date( 'd.m.Y H:i:s', strtotime( $user->created_at ) ) }}</td>
+                            <td><a href="{{ route( 'users.edit', [ 'user' => $user ] ) }}">Edit</a></td>
+                        </tr>
                     @endforeach
                     </ul>
                     @endif

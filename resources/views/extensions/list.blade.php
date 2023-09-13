@@ -27,7 +27,7 @@
                             <th scope="col">#</th>
                             <th scope="col">Name</th>
                             <th scope="col">Slug</th>
-                            <th scope="col">Folder</th>
+                            <th scope="col">Update URL</th>
                             <th scope="col">Actions</th>
                         </tr>
                         </thead>
@@ -37,18 +37,18 @@
                             <td>{{ $idx + 1 }}</td>
                             <td>{{ $item->name }}</td>
                             <td>{{ $item->slug }}</td>
-                            <td>{{ base_path() }}/{{ $item->type }}s/{{ $item->slug }} </td>
-                            <td class="d-flex">
-                                <a class="mr-2" href="{{ route( 'extensions.edit', [ 'extension' => $item ] ) }}" title="Edit">
+                            <td><a href="{{ url('/') }}/extension/{{ $item->slug }}" target="_blank" rel="noopener noreferrer">{{ url('/') }}/extension/{{ $item->slug }}</a></td>
+                            <td width="10%">
+                                <a class="mr-2 text-decoration-none" href="{{ route( 'extensions.edit', [ 'extension' => $item ] ) }}" title="Edit extension">
                                     <i class="fa-solid fa-pen"></i>
                                 </a>
-                                <a class="mr-2" href="{{ route( 'extensions.upload_form', ['extension' => $item] ) }}" title="Upload file extension">
+                                <a class="mr-2 text-decoration-none" href="{{ route( 'extensions.upload_form', ['extension' => $item] ) }}" title="Upload extension file">
                                     <i class="fa-solid fa-folder-open"></i>
                                 </a>
-                                <a class="mr-2 text-green" href="{{ route( 'extensions.view_manifest', [ 'extension' => $item ] ) }}" title="Edit">
+                                <a class="mr-2 text-green text-decoration-none" href="{{ route( 'extensions.view_manifest', [ 'extension' => $item ] ) }}" title="Edit Manifest">
                                     <i class="fa-solid fa-code"></i>
                                 </a>
-                                {!! Form::model( $item, [ 'url' => route( 'extensions.delete', ['extension' => $item->id] ), 'method' => 'post' ] ) !!}
+                                {!! Form::model( $item, [ 'url' => route( 'extensions.delete', ['extension' => $item->id] ), 'method' => 'post', 'style' => 'display: inline;' ] ) !!}
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" onclick="return confirm('Are you sure?')" class="text-red-400" title="Delete"><i class="fa-solid fa-trash"></i></button>

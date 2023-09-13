@@ -1,5 +1,16 @@
 # Change log
 
+## 1.0.2 - 13.09.2023
+
+- Added extensions icon and banners
+- Added conditional to return extension manifest only if the extension file exists
+- Small fixes and changes
+- Styled various components
+
+### Fixed
+
+- Extension name when it is uploaded
+
 ## 1.0.1 - 09.09.2023
 
 ### Added

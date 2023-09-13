@@ -123,7 +123,7 @@ class ExtensionsController extends Controller
 
     public function saveManifest( Request $request, Extension $extension ) {
 
-        $validated = $request->validate([
+        $validate_fields = [
             'name'           => 'required',
             'slug'           => 'required',
             'author'         => 'required',
@@ -137,7 +137,23 @@ class ExtensionsController extends Controller
             'description'    => 'required',
             'installation'   => 'required',
             'changelog'      => 'required'
-        ]);
+        ];
+
+        if( $extension->type == 'plugin' ) {
+
+            $validate_fields['banner_low']  = 'image|mimes:jpg,png|max:2048|dimensions:min_width=772,min_height=250,max_width=772,max_height=250';
+            $validate_fields['banner_high'] = 'image|mimes:jpg,png|max:2048|dimensions:min_width=1544,min_height=500,max_width=1544,max_height=500';
+            $validate_fields['icon']        = 'image|mimes:jpg,png|max:2048|dimensions:min_width=128,min_height=128,max_width=256,max_height=256';
+
+        }
+
+        if( $extension->type == 'theme' ) {
+
+            $validate_fields['screenshot'] = 'image|mimes:jpg,png|max:2048|dimensions:min_width=1200,min_height=900,max_width=1200,max_height=900';
+
+        }
+        
+        $validated = $request->validate( $validate_fields );
 
         $manifest = [
             'name'           => $request->name,
@@ -154,8 +170,39 @@ class ExtensionsController extends Controller
                 'description'  => $request->description,
                 'installation' => $request->installation,
                 'changelog'    => $request->changelog,
+            ],
+            'banners' => [
+                'low'  => isset( $extension->manifest['banners']['low'] ) ? $extension->manifest['banners']['low'] : '',
+                'high' => isset( $extension->manifest['banners']['high'] ) ? $extension->manifest['banners']['high'] : ''
+            ],
+            'icons'   => [
+                'default' => isset( $extension->manifest['icons']['default'] ) ? $extension->manifest['icons']['default'] : ''
             ]
         ];
+
+        if( $extension->type == 'plugin' ) {
+
+            $extension_url = url('/') . '/extensions-uploads/' . $extension->slug . '/';
+
+            if( $request->banner_low ) {
+                $manifest['banners']['low'] = $this->uploadExtensionImage( $extension, $request->banner_low, 'banner-772x250' ) ? $extension_url . 'banner-772x250.' . $request->banner_low->getClientOriginalExtension() : '';
+            }
+
+            if( $request->banner_high ) {
+                $manifest['banners']['high'] = $this->uploadExtensionImage( $extension, $request->banner_high, 'banner-1544x500' ) ? $extension_url . 'banner-1544x500.' . $request->banner_high->getClientOriginalExtension() : '';
+            }
+
+            if( $request->icon ) {
+                $manifest['icons']['default'] = $this->uploadExtensionImage( $extension, $request->icon, 'icon-128x128' ) ? $extension_url . 'icon-128x128.' . $request->icon->getClientOriginalExtension() : '';
+            }
+
+        }
+
+        if( $extension->type == 'theme' && $request->screenshot ) {
+
+            $manifest['screenshot_url'] = $this->uploadExtensionImage( $extension, $request->screenshot, 'screenshot-1200x900' ) ? $extension_url . 'screenshot-1200x900.' . $request->screenshot->getClientOriginalExtension() : '';
+
+        }
 
         $extension->manifest = $manifest;
 
@@ -204,7 +251,7 @@ class ExtensionsController extends Controller
 
         }
 
-        if( $extension && $extension->manifest ) {
+        if( $extension && $extension->manifest && File::exists( public_path( 'extensions-uploads/' . $extension->slug ) . '/' . $extension->slug . '.zip') ) {
             return json_encode( $extension->manifest );
         }
 
@@ -248,9 +295,19 @@ class ExtensionsController extends Controller
 
         }
 
-        $file->move( $destinationPath,'woocommerce-byjuno.zip' );
+        $file->move( $destinationPath, $extension->slug . '.zip' );
 
         return redirect()->back()->with( 'message-success', 'Extension file saved!' );
+
+    }
+
+    function uploadExtensionImage( Extension $extension, $file, $file_type ) {
+
+        $destinationPath = public_path( 'extensions-uploads/' . $extension->slug );
+
+        $upload = $file->move( $destinationPath, $file_type . '.' . $file->getClientOriginalExtension() );
+        
+        return $upload ? $file->getClientOriginalName() : null;
 
     }
 

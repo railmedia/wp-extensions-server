@@ -32,11 +32,11 @@
                     {!! Form::file( 'file', [ 'class' => 'form-control' ] ) !!}
                     </div>
                     <div class="mb-3">
-                    <p>Only zip files allowed. Please upload a file named {{ $item->slug }}.zip of maximum {{ ini_get('upload_max_filesize') }} in size. If the file is too large, please use FTP to upload to /public/extensions/{{ $item->slug }} folder.</p>
+                    <p>Only zip files allowed. Please upload a file named {{ $item->slug }}.zip of maximum {{ ini_get('upload_max_filesize') }} in size. If the file is too large, please use FTP to upload to /public/extensions-uploads/{{ $item->slug }} folder.</p>
                     </div>
                     <div class="mb-3">
                         <button type="submit" class="btn btn-success text-white">
-                            Save
+                            Upload
                         </button>
                     </div>
                     {!! Form::close() !!}

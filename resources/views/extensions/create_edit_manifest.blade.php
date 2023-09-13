@@ -43,8 +43,8 @@
                 </div>
                 <div class="mb-3">
                     {!! Form::label( 'download_url', 'Download URL' ) !!}
-                    <p>{{ url('/') }}/{{ $item->type }}s/{{ $item->slug }}.zip</p>
-                    {!! Form::hidden( 'download_url', old( 'download_url', $manifest['download_url'] ?? url('/') . '/' . $item->type . 's/' . $item->slug . '.zip' ), [ 'class' => 'form-control' ] ) !!}
+                    <p>{{ url('/') }}/extensions-uploads/{{ $item->slug }}/{{ $item->slug }}.zip</p>
+                    {!! Form::hidden( 'download_url', url('/') . '/extensions-uploads/' . $item->slug . '/' . $item->slug . '.zip', [ 'class' => 'form-control' ] ) !!}
                 </div>
                 <div class="mb-3">
                     {!! Form::label( 'requires', 'Requires WP version*' ) !!}
@@ -62,6 +62,41 @@
                     {!! Form::label( 'last_updated', 'Last updated date*' ) !!}
                     {!! Form::text( 'last_updated', old( 'last_updated', $manifest['last_updated'] ?? '' ), [ 'class' => 'form-control' ] ) !!}
                 </div>
+                @if( $item->type == 'plugin' )
+                <div class="mb-3">
+                    {!! Form::label( 'icon', 'Icon ( 128px x 128px | JPG / PNG | max. 2MB )' ) !!}
+                    @if( isset( $manifest['icons']['default'] ) && $manifest['icons']['default'] )
+                        <a href="{{ $manifest['icons']['default'] }}" target="_blank" rel="noreferrer noopener">
+                            Current icon image
+                        </a>
+                    @endif
+                    {!! Form::file( 'icon', [ 'class' => 'form-control' ] ) !!}
+                </div>
+                <div class="mb-3">
+                    {!! Form::label( 'banner_low', 'Banner low - 772px x 250px | JPG / PNG | max. 2MB' ) !!}
+                    @if( isset( $manifest['banners']['low'] ) && $manifest['banners']['low'] )
+                        <a href="{{ $manifest['banners']['low'] }}" target="_blank" rel="noreferrer noopener">
+                            Current banner low image
+                        </a>
+                    @endif
+                    {!! Form::file( 'banner_low', [ 'class' => 'form-control' ] ) !!}
+                </div>
+                <div class="mb-3">
+                    {!! Form::label( 'banner_high', 'Banner high - 1544px x 500px | JPG / PNG | max. 2MB' ) !!}
+                    @if( isset( $manifest['banners']['high'] ) && $manifest['banners']['high'] )
+                        <a href="{{ $manifest['banners']['high'] }}" target="_blank" rel="noreferrer noopener">
+                            Current banner high image
+                        </a>
+                    @endif
+                    {!! Form::file( 'banner_high', [ 'class' => 'form-control' ] ) !!}
+                </div>
+                @endif
+                @if( $item->type == 'theme' )
+                <div class="mb-3">
+                    {!! Form::label( 'screenshot', 'Screenshot ( 1200px x 900px | JPG / PNG | max. 2MB )' ) !!}
+                    {!! Form::file( 'screenshot', [ 'class' => 'form-control' ] ) !!}
+                </div>
+                @endif
                 <div class="mb-3">
                     {!! Form::label( 'description', 'Description*' ) !!}
                     {!! Form::textarea( 'description', old( 'description', $manifest['sections']['description'] ?? '' ), [ 'class' => 'form-control' ] ) !!}
