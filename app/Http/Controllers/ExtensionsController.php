@@ -125,9 +125,7 @@ class ExtensionsController extends Controller
 
         $validate_fields = [
             'name'           => 'required',
-            'slug'           => 'required',
             'author'         => 'required',
-            'author_profile' => 'required',
             'version'        => 'required',
             'download_url'   => 'required',
             'requires'       => 'required',
@@ -135,15 +133,16 @@ class ExtensionsController extends Controller
             'requires_php'   => 'required',
             'last_updated'   => 'required',
             'description'    => 'required',
-            'installation'   => 'required',
             'changelog'      => 'required'
         ];
 
         if( $extension->type == 'plugin' ) {
 
+            $validate_fields['slug']        = 'required';
             $validate_fields['banner_low']  = 'image|mimes:jpg,png|max:2048|dimensions:min_width=772,min_height=250,max_width=772,max_height=250';
             $validate_fields['banner_high'] = 'image|mimes:jpg,png|max:2048|dimensions:min_width=1544,min_height=500,max_width=1544,max_height=500';
             $validate_fields['icon']        = 'image|mimes:jpg,png|max:2048|dimensions:min_width=128,min_height=128,max_width=256,max_height=256';
+            $validate_fields['installation']= 'required';
 
         }
 
@@ -157,7 +156,6 @@ class ExtensionsController extends Controller
 
         $manifest = [
             'name'           => $request->name,
-            'slug'           => $request->slug,
             'author'         => $request->author,
             'author_profile' => $request->author_profile,
             'version'        => $request->version,
@@ -180,9 +178,11 @@ class ExtensionsController extends Controller
             ]
         ];
 
+        $extension_url = url('/') . '/extensions-uploads/' . $extension->slug . '/';
+
         if( $extension->type == 'plugin' ) {
 
-            $extension_url = url('/') . '/extensions-uploads/' . $extension->slug . '/';
+            $manifest['slug'] = $request->slug;
 
             if( $request->banner_low ) {
                 $manifest['banners']['low'] = $this->uploadExtensionImage( $extension, $request->banner_low, 'banner-772x250' ) ? $extension_url . 'banner-772x250.' . $request->banner_low->getClientOriginalExtension() : '';
@@ -198,9 +198,13 @@ class ExtensionsController extends Controller
 
         }
 
-        if( $extension->type == 'theme' && $request->screenshot ) {
+        if( $extension->type == 'theme' ) {
 
-            $manifest['screenshot_url'] = $this->uploadExtensionImage( $extension, $request->screenshot, 'screenshot-1200x900' ) ? $extension_url . 'screenshot-1200x900.' . $request->screenshot->getClientOriginalExtension() : '';
+            $manifest['screenshot_url'] = isset( $extension->manifest['screenshot_url'] ) ? $extension->manifest['screenshot_url'] : '';
+
+            if( $request->screenshot ) {
+                $manifest['screenshot_url'] = $this->uploadExtensionImage( $extension, $request->screenshot, 'screenshot-1200x900' ) ? $extension_url . 'screenshot-1200x900.' . $request->screenshot->getClientOriginalExtension() : '';
+            }
 
         }
 
@@ -254,6 +258,16 @@ class ExtensionsController extends Controller
         if( $extension && $extension->manifest && File::exists( public_path( 'extensions-uploads/' . $extension->slug ) . '/' . $extension->slug . '.zip') ) {
             return json_encode( $extension->manifest );
         }
+
+    }
+
+    public function publicExtensionDescription( Request $request ) {
+
+        $extension = Extension::where( 'slug', $request->slug )->first();
+
+        return view('extensions.description')
+            ->with('item', $extension)
+            ->with('manifest', $extension->manifest);
 
     }
 

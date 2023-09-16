@@ -25,16 +25,18 @@
                     {!! Form::label( 'name', 'Name*' ) !!}
                     {!! Form::text( 'name', old( 'name', $manifest['name'] ?? '' ), [ 'class' => 'form-control' ] ) !!}
                 </div>
+                @if( $item->type == 'plugin' )
                 <div class="mb-3">
                     {!! Form::label( 'slug', 'Slug*' ) !!}
                     {!! Form::text( 'slug', old( 'slug', $manifest['slug'] ?? '' ), [ 'class' => 'form-control' ] ) !!}
                 </div>
+                @endif
                 <div class="mb-3">
-                    {!! Form::label( 'author', 'Author*' ) !!}
+                    {!! Form::label( 'author', 'Author' ) !!}
                     {!! Form::text( 'author', old( 'author', $manifest['author'] ?? '' ), [ 'class' => 'form-control' ] ) !!}
                 </div>
                 <div class="mb-3">
-                    {!! Form::label( 'author_profile', 'Author profile URL*' ) !!}
+                    {!! Form::label( 'author_profile', 'Author profile URL' ) !!}
                     {!! Form::text( 'author_profile', old( 'author_profile', $manifest['author_profile'] ?? '' ), [ 'class' => 'form-control' ] ) !!}
                 </div>
                 <div class="mb-3">
@@ -101,10 +103,12 @@
                     {!! Form::label( 'description', 'Description*' ) !!}
                     {!! Form::textarea( 'description', old( 'description', $manifest['sections']['description'] ?? '' ), [ 'class' => 'form-control' ] ) !!}
                 </div>
+                @if( $item->type == 'plugin' )
                 <div class="mb-3">
                     {!! Form::label( 'installation', 'Installation instructions*' ) !!}
                     {!! Form::textarea( 'installation', old( 'installation', $manifest['sections']['installation'] ?? '' ), [ 'class' => 'form-control' ] ) !!}
                 </div>
+                @endif
                 <div class="mb-3">
                     {!! Form::label( 'changelog', 'Change Log*' ) !!}
                     {!! Form::textarea( 'changelog', old( 'changelog', $manifest['sections']['changelog'] ?? '' ), [ 'class' => 'form-control' ] ) !!}

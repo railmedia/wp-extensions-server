@@ -75,6 +75,7 @@ Route::middleware('auth')->group(function () {
 
 });
 
-Route::get( '/extension/{slug}', 'App\Http\Controllers\ExtensionsController@publicExtensionData' )->name( 'extensions.public' );
+Route::get( '/extension/{slug}', 'App\Http\Controllers\ExtensionsController@publicExtensionData' )->name( 'extensions.public.manifest' );
+Route::get( '/extension/{slug}/description', 'App\Http\Controllers\ExtensionsController@publicExtensionDescription' )->name( 'extensions.public.description' );
 
 require __DIR__.'/auth.php';
